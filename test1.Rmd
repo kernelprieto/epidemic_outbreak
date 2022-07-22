@@ -1,0 +1,75 @@
+---
+title: "test1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+#library(epi.branch.sim)
+
+my_path <- c("./R/")   # set your path
+source_files <- list.files(my_path, "*.R$")  # locate all .R files
+map(paste0(my_path, source_files), source) # source all your R scripts
+
+#without using tidyverse:
+for (f in list.files(pattern = "*.R")){
+  source(f)
+}
+
+#or file by file
+#source("./R/setup_simulation.R")
+
+```
+
+
+
+```{r}
+# Set up simulation objects
+sim_params <- initialize_sim_params(
+  R0=3.0, infect_dur=999, vary_trace=FALSE, p_trace=0.8, 
+  p_trace_app=0, p_trace_app_comp=0, p_symp=0.9, dt=1,
+  incub_params=list(dist='weibull', shape=2.322737, scale=6.492272),
+  generation_int_params=list(dist='skew_norm', omega=2, alpha=1.95),
+  iso_delay_params=list(dist='Hellewell', shape=1.651524, scale=4.287786),
+  sec_infect_params=list(type='Hellewell', disp=0.16),
+  import_params=list(type="None"), 
+  phys_dist_params=list(
+    pd_pop_frac = 0, 
+    pd_contact_rate1 = 1.0,
+    pd_contact_rate2 = 1.0,
+    pd_change_t = 0)
+)
+
+```
+
+
+
+
+
+```{r pressure, echo=FALSE}
+start_time <- 0
+n_initial <- 20
+sim_status <- initialize_sim_status(start_time,n_initial) 
+state_df   <- create_state_df(n_initial,sim_params, sim_status, initialize=TRUE)
+record_df  <- create_record_df(state_df, sim_status, initialize=TRUE)
+```
+
+
+```{r}
+# Run for 30 steps
+for (t in 1:30){
+  out <- step_simulation(sim_status, state_df, record_df, sim_params)
+  sim_status <- out$status # update sim_status
+  state_df <- out$state    # update state_df
+  record_df <- out$record  # update record_df
+}
+
+# Output products are the state_df and record_df data frames
+```
+
