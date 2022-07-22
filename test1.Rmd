@@ -18,9 +18,17 @@ source_files <- list.files(my_path, "*.R$")  # locate all .R files
 map(paste0(my_path, source_files), source) # source all your R scripts
 
 #without using tidyverse:
-for (f in list.files(pattern = "*.R")){
-  source(f)
-}
+# for (f in list.files(pattern = "*.R")){
+#   source(f)
+# }
+
+#To load .rda files:
+# for (f in list.files(pattern = "*.rda")){
+#   load(f)
+# }
+
+
+
 
 #or file by file
 #source("./R/setup_simulation.R")
@@ -72,4 +80,13 @@ for (t in 1:30){
 
 # Output products are the state_df and record_df data frames
 ```
+
+
+```{r}
+library(usethis)
+use_git_config( user.name = "kernel_prieto", user.email = "kernel@ciencias.unam.mx")
+
+```
+
+
 
